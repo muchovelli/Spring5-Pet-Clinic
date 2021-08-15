@@ -3,39 +3,47 @@ package guru.springframework.sfgpetclinic.services.springdatajpa;
 import guru.springframework.sfgpetclinic.model.Owner;
 import guru.springframework.sfgpetclinic.repositories.OwnerRepository;
 import guru.springframework.sfgpetclinic.repositories.PetRepository;
+import guru.springframework.sfgpetclinic.repositories.PetTypeRepository;
 import guru.springframework.sfgpetclinic.services.OwnerService;
-import guru.springframework.sfgpetclinic.services.PetTypeService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Created by jt on 8/5/18.
+ */
 @Service
 @Profile("springdatajpa")
-public class OwnerSDJpa implements OwnerService {
+public class OwnerSDJpaService implements OwnerService {
 
     private final OwnerRepository ownerRepository;
     private final PetRepository petRepository;
-    private final PetTypeService petTypeService;
+    private final PetTypeRepository petTypeRepository;
 
-    public OwnerSDJpa(OwnerRepository ownerRepository, PetRepository petRepository, PetTypeService petTypeService) {
+    public OwnerSDJpaService(OwnerRepository ownerRepository, PetRepository petRepository,
+                             PetTypeRepository petTypeRepository) {
         this.ownerRepository = ownerRepository;
         this.petRepository = petRepository;
-        this.petTypeService = petTypeService;
+        this.petTypeRepository = petTypeRepository;
+    }
+
+    @Override
+    public Owner findByLastName(String lastName) {
+        return ownerRepository.findByLastName(lastName);
     }
 
     @Override
     public Set<Owner> findAll() {
         Set<Owner> owners = new HashSet<>();
-        ownerRepository.findAll().forEach((owners::add));
+        ownerRepository.findAll().forEach(owners::add);
         return owners;
     }
 
     @Override
     public Owner findById(Long aLong) {
-        return  ownerRepository.findById(aLong).orElse(null);
+        return ownerRepository.findById(aLong).orElse(null);
     }
 
     @Override
@@ -51,10 +59,5 @@ public class OwnerSDJpa implements OwnerService {
     @Override
     public void deleteById(Long aLong) {
         ownerRepository.deleteById(aLong);
-    }
-
-    @Override
-    public Owner findByLastName(String lastName) {
-        return ownerRepository.findByLastName(lastName);
     }
 }
